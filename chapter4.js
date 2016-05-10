@@ -66,8 +66,31 @@ array given as argument in order to reverse its elements. Neither may use the st
 Thinking back to the notes about side effects and pure functions in the previous chapter, which
 variant do you expect to be useful in more situations? Which one is more efficient?
 */
+function reverseArray(arr){
+    var i, result = [];
+    for (i = arr.length; i >= 0; i--){
+        result.push(arr[i]);
+    }
+    return result;
+}
 
+console.log(reverseArray(["A", "B", "C"]));
+// → ["C", "B", "A"];
 
+function reverseArrayInPlace(arr){
+    var i, temp;
+    for (i = 0; i < Math.floor(arr.length / 2); i++){
+        temp = arr[i];
+        arr[i] = arr[arr.length - 1 -i];
+        arr[arr.length - 1 -i] = temp;
+    }
+    return arr;
+}
+
+var arrayValue = [1, 2, 3, 4, 5];
+reverseArrayInPlace(arrayValue);
+console.log(arrayValue);
+// → [5, 4, 3, 2, 1]
 
 /* ===========================
 A list
@@ -79,9 +102,74 @@ returns the element at the given position in the list, or undefined when there i
 
 If you haven’t already, also write a recursive version of nth.
 */
+var List = {
+    value: null,
+    rest: null,
+};
 
+function arrayToList(arr){
+    var nList = new List();
+    nList.value = arr[-1];
+    for (var i = 0; i < arr.length - 1; i++){
+        nList = prepend(arr[i], nList);
+    }
+    return nList;
+}
 
+function listToArray(list){
+    var result = [];
+    while (list.rest){
+        result.push(list.value);
+        list = list.rest;
+    }
+    return result;
+}
 
+function prepend(val, list){
+    var newList = new List();
+    newList.value = val;
+    newList.rest = list;
+    return newList;
+}
+
+console.log(prepend(10, prepend(20, null)));
+// → {value: 10, rest: {value: 20, rest: null}}
+
+function nth(list, n){
+    var i = 0;
+    while(i < n && list.rest) {
+        list = list.rest;
+        i++;
+    }
+    if (i === n){
+        return list.value;
+    }else {
+        return "";
+    }
+}
+console.log(nth(arrayToList([10, 20, 30]), 1));
+// → 20
+
+function nthRecursive(list, n){
+    if (n === 0 && list){
+        return list.value;
+    }
+    if (list.rest && n > 0){
+        return nthRecursive(list.rest, n -1 );
+    }else {
+        return "";
+    }
+}
+console.log(nth(arrayToList([10, 20, 30]), 1));
+// → 20
+
+console.log(arrayToList([10, 20]));
+// → {value: 10, rest: {value: 20, rest: null}}
+console.log(listToArray(arrayToList([10, 20, 30])));
+// → [10, 20, 30]
+
+console.log(nth(arrayToList([10, 20, 30]), 1));
+// → 20
 
 /* ===========================
 Deep comparison
@@ -98,3 +186,7 @@ looking at their properties, you can use the typeof operator. If it produces "ob
 values, you should do a deep comparison. But you have to take one silly exception into account:
 by a historical accident, typeof null also produces "object".
 */
+
+
+
+
