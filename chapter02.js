@@ -1,3 +1,6 @@
+// eloquentJavaScript.net
+// Chapter 2: Program Structure
+
 /* ===========================
 Looping a triangle
 

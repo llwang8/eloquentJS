@@ -1,3 +1,6 @@
+// eloquentJavaScript.net
+// Chapter 4: Data Structures: Objects and Arrays
+
 /* ===========================
 The sum of a range
 
@@ -108,13 +111,17 @@ var List = {
 };
 
 function arrayToList(arr){
-    var nList = new List();
-    nList.value = arr[-1];
-    for (var i = 0; i < arr.length - 1; i++){
+    var nList = {};
+    nList.value = arr[arr.length-1];
+    nList.rest = null;
+    //console.log("last list item: ");
+    //console.log(nList);
+    for (var i = arr.length - 2; i >= 0; i--){
         nList = prepend(arr[i], nList);
     }
     return nList;
 }
+//console.log(arrayToList([10, 20]));
 
 function listToArray(list){
     var result = [];
@@ -122,17 +129,20 @@ function listToArray(list){
         result.push(list.value);
         list = list.rest;
     }
+    result.push(list.value);
     return result;
+    //return result.push(list.value);
 }
+console.log(listToArray(arrayToList([10, 20, 30])));
 
 function prepend(val, list){
-    var newList = new List();
+    var newList = {};
     newList.value = val;
     newList.rest = list;
     return newList;
 }
 
-console.log(prepend(10, prepend(20, null)));
+//console.log(prepend(10, prepend(20, null)));
 // → {value: 10, rest: {value: 20, rest: null}}
 
 function nth(list, n){
@@ -160,14 +170,13 @@ function nthRecursive(list, n){
         return "";
     }
 }
-console.log(nth(arrayToList([10, 20, 30]), 1));
-// → 20
 
+console.log(nthRecursive(arrayToList([10, 20, 30]), 1));
+// → 20
 console.log(arrayToList([10, 20]));
 // → {value: 10, rest: {value: 20, rest: null}}
 console.log(listToArray(arrayToList([10, 20, 30])));
 // → [10, 20, 30]
-
 console.log(nth(arrayToList([10, 20, 30]), 1));
 // → 20
 
@@ -186,7 +195,59 @@ looking at their properties, you can use the typeof operator. If it produces "ob
 values, you should do a deep comparison. But you have to take one silly exception into account:
 by a historical accident, typeof null also produces "object".
 */
+function deepEqual(a, b){
+
+    if ((typeof a == "object" && a != null ) && (typeof b == "object" && b != null)){
+        if (!arraysEqual(Object.keys(a), Object.keys(b))){
+            console.log("1");
+            return false;
+        }
+        for (property in a){
+            if (!b.hasOwnProperty(property)){
+                console.log("2");
+                return false;
+            }
+            if (typeof a. property === "object"  && typeof b.property === "object"){
+                return deepEqual(a[property], b[property]);
+            }else if (a[property] !== b[property]){
+                console.log("3");
+                return false;
+            }
+        }
+        console.log("5");
+        return true;
+    }else if (a === null || b === null){
+        console.log("4");
+        return false;
+    }
+    console.log("6");
+    return a === b;
+}
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+var obj = {here: {is: "an"}, object: 2};
+console.log(deepEqual(obj, {here: {is: "an"}, object: 2}));
+console.log(deepEqual(obj, {here: 1, object: 2}));
+
+console.log(deepEqual(obj, obj));
+// → true
+
+// → false
+
+// → true
 
 
-
-
+console.log(["here", "object"] != ["here", "object"]);
